@@ -11,14 +11,14 @@ Paste this to new collab notes and execute:
 ! chmod +x CRD.sh
 ! ./CRD.sh
 ```
-This will create a new username b4iterdev with password:b4iter,then install xfce and chrome remote desktop server
+This will create a new username p2pay with password:p2pay,then install xfce and chrome remote desktop server
 
-You might want to change b4iterdev's password using "passwd" (without quotes and sudo)
+You might want to change p2pay's password using "passwd" (without quotes and sudo)
 
 You can also change root user password using "sudo passwd" (without quotes)
 
 And you now have a free VPS (lol)
-## NOTE: b4iterdev's password is: b4iter (stop asking me for this)
+## NOTE: p2pay's password is: p2pay (stop asking me for this)
 # Prevent from disconnecting.
 You can keep your session running by creating a new code block (Ctrl+ M B) and put: 
 ```
