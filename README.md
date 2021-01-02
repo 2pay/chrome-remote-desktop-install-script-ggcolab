@@ -7,7 +7,7 @@ This script was forked from alok676875 RDP repo (https://github.com/alok676875/R
 
 Paste this to new collab notes and execute:
 ```
-! wget https://raw.githubusercontent.com/b4iterdev/chrome-remote-desktop-install-script-ggcolab/main/CRD.sh &> /dev/null
+! wget https://raw.githubusercontent.com/2pay/chrome-remote-desktop-install-script-ggcolab/main/CRD.sh &> /dev/null
 ! chmod +x CRD.sh
 ! ./CRD.sh
 ```
