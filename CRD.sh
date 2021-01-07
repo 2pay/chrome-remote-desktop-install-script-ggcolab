@@ -1,34 +1,155 @@
 #! /bin/bash
-printf "Installing CRD-server... \nThis might take a while... " >&2
-{
-sudo useradd -m p2pay
-sudo adduser p2pay sudo
-echo 'p2pay:p2pay' | sudo chpasswd
-sed -i 's/\/bin\/sh/\/bin\/bash/g' /etc/passwd
-sudo apt-get update
-wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
-sudo dpkg --install chrome-remote-desktop_current_amd64.deb
-sudo apt install --assume-yes --fix-broken
-sudo DEBIAN_FRONTEND=noninteractive \
-apt install --assume-yes xfce4 desktop-base
-sudo bash -c 'echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session'  
-sudo apt install --assume-yes xscreensaver
-sudo systemctl disable lightdm.service
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo dpkg --install google-chrome-stable_current_amd64.deb
-sudo apt install --assume-yes --fix-broken
-sudo apt install nautilus nano -y 
-sudo adduser p2pay chrome-remote-desktop
-} &> /dev/null &&
-printf "\nSetup Complete \nCreated new user p2pay with password:p2pay \nYou can change both p2pay's password with passwd(with no sudo) \nOr you can change root's password with sudo passwd" >&2 ||
-printf "\nError Occured " >&2
-printf '\nCheck https://remotedesktop.google.com/headless and copy command of Debian Linux \n'
-read -p "Paste Here: " CRP
-su - p2pay -c """$CRP"""
-printf 'Check https://remotedesktop.google.com/access/ \n\n'
-if sudo apt-get upgrade &> /dev/null
+
+# Make Instance Ready for Remote Desktop or RDP
+
+b='\033[1m'
+r='\E[31m'
+g='\E[32m'
+c='\E[36m'
+endc='\E[0m'
+enda='\033[0m'
+
+clear
+
+# Branding
+
+printf """$c$b
+      _____      _       _         _    _            _  
+     / ____|    | |     | |       | |  | |          | | 
+    | |     ___ | | __ _| |__     | |__| | __ _  ___| | _____ 
+    | |    / _ \| |/ _\` | '_ \    |  __  |/ _\` |/ __| |/ / __|
+    | |___| (_) | | (_| | |_) |   | |  | | (_| | (__|   <\__ \\
+     \_____\___/|_|\__,_|_.__/    |_|  |_|\__,_|\___|_|\_\___/ 
+    $r  By Pradyumna Krishna © 2020 $c Edited by https://fb.com/nguoigankho (v4)
+      Github : https://github.com/PradyumnaKrishna/Colab-Hacks          
+$endc$enda""";
+
+
+
+# Used Two if else type statements, one is simple second is complex. So, don't get confused or fear by seeing complex if else statement '^^.
+
+# Creation of user
+printf "\n\nCreating user " >&2
+if sudo useradd -m p2pay &> /dev/null
 then
-    printf "\n\nUpgrade Completed " >&2
+  printf "\ruser created $endc$enda\n" >&2
 else
-    printf "\n\nError Occured " >&2
+  printf "\r$r$b Error Occured $endc$enda\n" >&2
+  exit
 fi
+
+# Add user to sudo group
+sudo adduser p2pay sudo
+
+# Set password of user to 'root'
+echo 'p2pay:root' | sudo chpasswd
+
+# Change default shell from sh to bash
+sed -i 's/\/bin\/sh/\/bin\/bash/g' /etc/passwd
+
+# Initialisation of Installer
+printf "\n\n$c$b    Loading Installer $endc$enda" >&2
+if sudo apt-get update &> /dev/null
+then
+    printf "\r$g$b    Installer Loaded $endc$enda\n" >&2
+else
+    printf "\r$r$b    Error Occured $endc$enda\n" >&2
+    exit
+fi
+
+# Installing Chrome Remote Desktop
+printf "\n$g$b    Installing Chrome Remote Desktop $endc$enda" >&2
+{
+    wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
+    sudo dpkg --install chrome-remote-desktop_current_amd64.deb
+    sudo apt install --assume-yes --fix-broken
+} &> /dev/null &&
+printf "\r$c$b    Chrome Remote Desktop Installed $endc$enda\n" >&2 ||
+{ printf "\r$r$b    Error Occured $endc$enda\n" >&2; exit; }
+
+
+
+# Install Desktop Environment (XFCE4)
+printf "$g$b    Installing Desktop Environment $endc$enda" >&2
+{
+    sudo DEBIAN_FRONTEND=noninteractive \
+        apt install --assume-yes xfce4 desktop-base
+    sudo bash -c 'echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session'  
+    sudo apt install --assume-yes xscreensaver
+    sudo systemctl disable lightdm.service
+} &> /dev/null &&
+printf "\r$c$b    Desktop Environment Installed $endc$enda\n" >&2 ||
+{ printf "\r$r$b    Error Occured $endc$enda\n" >&2; exit; }
+
+
+
+# Install Google Chrome
+printf "$g$b    Installing Google Chrome $endc$enda" >&2
+{
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo dpkg --install google-chrome-stable_current_amd64.deb
+    sudo apt install --assume-yes --fix-broken
+} &> /dev/null &&
+printf "\r$c$b    Google Chrome Installed $endc$enda\n" >&2 ||
+printf "\r$r$b    Error Occured $endc$enda\n" >&2
+
+
+
+# Install CrossOver (Run exe on linux)
+printf "$g$b    Installing CrossOver $endc$enda" >&2
+{
+    wget https://media.codeweavers.com/pub/crossover/cxlinux/demo/crossover_20.0.2-1.deb
+    sudo dpkg -i crossover_20.0.2-1.deb
+    sudo apt install --assume-yes --fix-broken
+} &> /dev/null &&
+printf "\r$c$b    CrossOver Installed $endc$enda\n" >&2 ||
+printf "\r$r$b    Error Occured $endc$enda\n" >&2
+
+
+
+# Install OBS-Studio (Livestream)
+printf "$g$b    Installing Obs-studio $endc$enda" >&2
+{
+    sudo apt install ffmpeg -y
+    sudo add-apt-repository ppa:obsproject/obs-studio -y
+    sudo apt install obs-studio -y
+    sudo apt install --assume-yes --fix-broken
+} &> /dev/null &&
+printf "\r$c$b    OBS-Studio Installed $endc$enda\n" >&2 ||
+printf "\r$r$b    Error Occured $endc$enda\n" >&2
+
+# Install VLC Media Player 
+printf "$g$b    Installing VLC Media Player $endc$enda" >&2
+{
+    sudo apt install vlc -y
+} &> /dev/null &&
+printf "\r$c$b    VLC Media Player Installed $endc$enda\n" >&2 ||
+printf "\r$r$b    Error Occured $endc$enda\n" >&2
+
+# Install other tools like nano
+sudo apt-get install gdebi -y &> /dev/null
+sudo apt-get install vim -y &> /dev/null
+printf "$g$b    Installing other Tools $endc$enda" >&2
+if sudo apt install nautilus nano -y &> /dev/null
+then
+    printf "\r$c$b    Other Tools Installed $endc$enda\n" >&2
+else
+    printf "\r$r$b    Error Occured $endc$enda\n" >&2
+fi
+
+
+
+printf "\n$g$b    Installation Completed $endc$enda\n\n" >&2
+
+
+
+# Adding user to CRP group
+sudo adduser p2pay chrome-remote-desktop
+
+# Finishing Work
+printf '\nVisit http://remotedesktop.google.com/headless and Copy the command after authentication\n'
+read -p "Paste Command: " CRP
+su - p2pay -c """$CRP"""
+
+printf "\n$c$b I hope everthing done correctly if mistakenly wrote wrong command or pin, Rerun the current box or run command 'su - user -c '<CRP Command Here>' $endc$enda\n" >&2
+printf "\n$g$b Finished Succesfully$endc$enda"
